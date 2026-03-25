@@ -3,6 +3,8 @@ const pool = require('./db');
 const app = express();
 
 app.use(express.json());
+app.use(require('cors')()); // Habilitar CORS para todas las rutas
+app.use(express.static('public')); // Servir archivos estáticos desde public
 
 // 🔹 Obtener usuarios
 app.get('/usuarios', async (req, res) => {

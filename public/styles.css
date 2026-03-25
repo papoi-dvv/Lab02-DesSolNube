@@ -75,3 +75,69 @@ footer {
     color: white;
     margin-top: 20px;
 }
+
+/* Estilos para la sección CRUD */
+.crud {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+#userForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#userForm input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#userForm button {
+    padding: 10px;
+    background: #1e2a38;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#userForm button:hover {
+    background: #2a3a4a;
+}
+
+#userList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    border-radius: 4px;
+}
+
+#userList li span {
+    flex-grow: 1;
+}
+
+#userList li button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#userList li button:first-of-type {
+    background: #ffc107;
+    color: black;
+}
+
+#userList li button:last-of-type {
+    background: #dc3545;
+    color: white;
+}

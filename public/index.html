@@ -70,9 +70,106 @@
         <p>GitHub: github.com/juanperez</p>
     </section>
 
+    <section class="crud container" id="crud">
+        <h2>Gestión de Usuarios</h2>
+        <form id="userForm">
+            <input type="text" id="nombre" placeholder="Nombre" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <button type="submit" id="submitBtn">Crear Usuario</button>
+            <button type="button" id="cancelBtn" style="display:none;">Cancelar</button>
+        </form>
+        <ul id="userList"></ul>
+    </section>
+
     <footer>
         <p>© 2026 Juan Pérez - Todos los derechos reservados</p>
     </footer>
+
+    <script>
+        const userForm = document.getElementById('userForm');
+        const nombreInput = document.getElementById('nombre');
+        const emailInput = document.getElementById('email');
+        const submitBtn = document.getElementById('submitBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const userList = document.getElementById('userList');
+
+        let editingId = null;
+
+        // Cargar usuarios al cargar la página
+        document.addEventListener('DOMContentLoaded', loadUsers);
+
+        // Manejar envío del formulario
+        userForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = nombreInput.value.trim();
+            const email = emailInput.value.trim();
+
+            if (!nombre || !email) return;
+
+            if (editingId) {
+                // Actualizar usuario
+                await fetch(`/usuarios/${editingId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, email })
+                });
+                editingId = null;
+                submitBtn.textContent = 'Crear Usuario';
+                cancelBtn.style.display = 'none';
+            } else {
+                // Crear usuario
+                await fetch('/usuarios', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, email })
+                });
+            }
+
+            userForm.reset();
+            loadUsers();
+        });
+
+        // Cancelar edición
+        cancelBtn.addEventListener('click', () => {
+            editingId = null;
+            userForm.reset();
+            submitBtn.textContent = 'Crear Usuario';
+            cancelBtn.style.display = 'none';
+        });
+
+        // Cargar y mostrar usuarios
+        async function loadUsers() {
+            const response = await fetch('/usuarios');
+            const users = await response.json();
+            userList.innerHTML = '';
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${user.nombre} - ${user.email}</span>
+                    <button onclick="editUser(${user.id}, '${user.nombre}', '${user.email}')">Editar</button>
+                    <button onclick="deleteUser(${user.id})">Eliminar</button>
+                `;
+                userList.appendChild(li);
+            });
+        }
+
+        // Editar usuario
+        function editUser(id, nombre, email) {
+            editingId = id;
+            nombreInput.value = nombre;
+            emailInput.value = email;
+            submitBtn.textContent = 'Actualizar Usuario';
+            cancelBtn.style.display = 'inline';
+        }
+
+        // Eliminar usuario
+        async function deleteUser(id) {
+            if (confirm('¿Estás seguro de eliminar este usuario?')) {
+                await fetch(`/usuarios/${id}`, { method: 'DELETE' });
+                loadUsers();
+            }
+        }
+    </script>
 
 </body>
 </html>
